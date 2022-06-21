@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using ClubStats.AspNetCore.DataAccess;
+using ClubStats.AspNetCore.Filters;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,7 @@ var assembly = Assembly.GetExecutingAssembly();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options => options.Filters.Add<ProblemDetailsAttribute>())
     .AddFluentValidation(options => options.RegisterValidatorsFromAssembly(assembly));
 
 builder.Services.AddMediatR(assembly);
