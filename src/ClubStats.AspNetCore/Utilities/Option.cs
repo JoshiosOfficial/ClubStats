@@ -1,5 +1,7 @@
 namespace ClubStats.AspNetCore.Utilities;
 
+public record ApiError(int Code, string Message);
+
 public readonly struct Option<T>
 {
     public readonly bool HasValue { get; }
