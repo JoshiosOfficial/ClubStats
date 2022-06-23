@@ -13,6 +13,7 @@ public class CreateMeeting
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 }
+
 public class CreateMeetingCommand : IRequest<Result<Guid, ApiError>>
 {
     public CreateMeeting Meeting { get; set; }
