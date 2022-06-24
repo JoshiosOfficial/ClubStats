@@ -2,18 +2,18 @@ namespace ClubStats.AspNetCore.Utilities;
 
 public readonly struct Result<TResult, TError>
 {
-    public readonly bool IsSuccess { get; }
-    public readonly TResult? Value { get; }
-    public readonly TError? ErrorValue { get; }
+    private readonly bool IsSuccess { get; }
+    private readonly TResult? Value { get; }
+    private readonly TError? ErrorValue { get; }
 
-    public Result(TResult result)
+    private Result(TResult result)
     {
         IsSuccess = true;
         Value = result;
         ErrorValue = default;
     }
 
-    public Result(TError error)
+    private Result(TError error)
     {
         IsSuccess = false;
         Value = default;

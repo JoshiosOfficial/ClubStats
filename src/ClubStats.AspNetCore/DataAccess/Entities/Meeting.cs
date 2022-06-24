@@ -7,5 +7,5 @@ public class Meeting
     public string Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public List<Attendee> Attendees { get; set; }
+    public List<Attendee> Attendees { get; set; } = new();
 }

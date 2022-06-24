@@ -1,4 +1,5 @@
-﻿using ClubStats.AspNetCore.DataAccess;
+﻿using System.ComponentModel.DataAnnotations;
+using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.DataAccess.Entities;
 using ClubStats.AspNetCore.Utilities;
 using Mapster;
@@ -16,6 +17,7 @@ public class CreateMeeting
 
 public class CreateMeetingCommand : IRequest<Result<Guid, ApiError>>
 {
+    [Required]
     public CreateMeeting Meeting { get; set; }
 }
 
@@ -33,11 +35,10 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
         var meeting = request.Meeting.Adapt<Meeting>();
 
         meeting.Id = new Guid();
-        meeting.Attendees = new List<Attendee>();
 
         try
         {
-            _dbContext.Add(meeting);
+            _dbContext.Meetings.Add(meeting);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Result<Guid, ApiError>.Ok(meeting.Id);
