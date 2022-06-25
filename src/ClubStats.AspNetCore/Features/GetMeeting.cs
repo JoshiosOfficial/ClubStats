@@ -44,7 +44,7 @@ public class GetMeetingQueryHandler : IRequestHandler<GetMeetingQuery, Result<Ge
                 .Select(meeting => meeting.Adapt<GetMeeting>())
                 .FirstOrDefaultAsync(cancellationToken);
             
-            if (meeting == null)
+            if (meeting is null)
             {
                 var error = new ApiError(404, "Could not find meeting with specified id");
 
