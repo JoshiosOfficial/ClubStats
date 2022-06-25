@@ -62,13 +62,11 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
 
     public async Task<Result<Guid, ApiError>> Handle(CreateMeetingCommand request, CancellationToken cancellationToken)
     {
-        var meeting = request.Meeting.Adapt<Meeting>();
-
-        meeting.Id = new Guid();
-
+        var meetingRequest = request.Meeting;
+        
         try
         {
-            var organization = await _dbContext.Organizations.FindAsync(request.Meeting.OrganizationId);
+            var organization = await _dbContext.Organizations.FindAsync(meetingRequest.OrganizationId);
 
             if (organization is null)
             {
@@ -77,6 +75,16 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
                 return Result<Guid, ApiError>.Error(error);
             }
 
+            var meeting = new Meeting
+            {
+                Id = Guid.NewGuid(),
+                Organization = organization,
+                OrganizationId = organization.Id,
+                Description = meetingRequest.Description,
+                StartDate = meetingRequest.StartDate,
+                EndDate = meetingRequest.EndDate
+            };
+            
             organization.Meetings.Add(meeting);
             await _dbContext.SaveChangesAsync(cancellationToken);
 

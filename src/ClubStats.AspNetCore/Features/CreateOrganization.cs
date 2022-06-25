@@ -30,9 +30,13 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
 
     public async Task<Result<Guid, ApiError>> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
-        var organization = request.Organization.Adapt<Organization>();
-
-        organization.Id = new Guid();
+        var organizationRequest = request.Organization;
+        
+        var organization = new Organization
+        {
+            Id = Guid.NewGuid(),
+            Name = organizationRequest.Name
+        };
 
         try
         {
