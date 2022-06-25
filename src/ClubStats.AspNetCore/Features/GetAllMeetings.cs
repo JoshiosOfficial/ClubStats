@@ -59,7 +59,7 @@ public class GetAllMeetingsCommandHandler : IRequestHandler<GetAllMeetingsComman
                 .Where(meeting => meeting.OrganizationId == meetingQuery.OrganizationId)
                 .Where(GetStateFilter(meetingQuery.State));
             
-            if (meetingQuery.Description != null)
+            if (!String.IsNullOrWhiteSpace(meetingQuery.Description))
             {
                 queryable = queryable.Where(meeting => meeting.Description.ToLower().Contains(meetingQuery.Description.ToLower()));
             }
