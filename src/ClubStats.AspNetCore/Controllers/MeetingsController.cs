@@ -31,10 +31,23 @@ public class MeetingsController : ControllerBase
 
     [HttpGet]
     [ProblemDetails]
-    public async Task<IActionResult> GetMeetings([FromQuery] GetAllMeetings getAllMeetings)
+    public async Task<IActionResult> GetAllMeetings([FromQuery] GetAllMeetings getAllMeetings)
     {
         var getAllMeetingsQuery = new GetAllMeetingsQuery { MeetingQuery = getAllMeetings };
         var response = await _mediator.Send(getAllMeetingsQuery);
+
+        return response.Match(
+            Ok,
+            error => StatusCode(error.Code, error)
+        );
+    }
+
+    [HttpGet("{id:guid}")]
+    [ProblemDetails]
+    public async Task<IActionResult> GetMeeting(Guid id)
+    {
+        var getMeetingQuery = new GetMeetingQuery { Id = id };
+        var response = await _mediator.Send(getMeetingQuery);
 
         return response.Match(
             Ok,
