@@ -38,7 +38,16 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
 
         try
         {
-            _dbContext.Meetings.Add(meeting);
+            var organization = await _dbContext.Organizations.FindAsync(request.Meeting.OrganizationId);
+
+            if (organization == null)
+            {
+                var error = new ApiError(400, "Invalid organization id was provided.");
+                
+                return Result<Guid, ApiError>.Error(error);
+            }
+
+            organization.Meetings.Add(meeting);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Result<Guid, ApiError>.Ok(meeting.Id);
