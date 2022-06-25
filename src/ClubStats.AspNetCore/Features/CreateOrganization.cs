@@ -9,7 +9,8 @@ namespace ClubStats.AspNetCore.Features;
 
 public class CreateOrganization
 { 
-    [Required] 
+    [Required]
+    [StringLength(100, MinimumLength = 5)]
     public string Name { get; set; } = string.Empty;
 }
 
