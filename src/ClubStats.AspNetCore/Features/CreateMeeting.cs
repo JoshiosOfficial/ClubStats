@@ -33,7 +33,7 @@ public class CreateMeeting : IValidatableObject
                 new[] { nameof(StartDate) });
         }
         
-        if (StartDate < EndDate)
+        if (StartDate > EndDate)
         {
             yield return new ValidationResult(
                 "End date time must be after start date time.",
