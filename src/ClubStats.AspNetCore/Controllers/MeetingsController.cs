@@ -1,4 +1,5 @@
-﻿using ClubStats.AspNetCore.Features;
+﻿using System.ComponentModel.DataAnnotations;
+using ClubStats.AspNetCore.Features;
 using ClubStats.AspNetCore.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ public class MeetingsController : ControllerBase
 
         return response.Match(
             guid => Ok(new { guid }),
-            error => StatusCode(error.Code, error)
+            error => error.Result()
         );
     }
 
@@ -38,7 +39,7 @@ public class MeetingsController : ControllerBase
 
         return response.Match(
             Ok,
-            error => StatusCode(error.Code, error)
+            error => error.Result()
         );
     }
 
@@ -51,7 +52,7 @@ public class MeetingsController : ControllerBase
 
         return response.Match(
             Ok,
-            error => StatusCode(error.Code, error)
+            error => error.Result()
         );
     }
 } 

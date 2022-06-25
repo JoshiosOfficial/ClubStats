@@ -2,43 +2,47 @@
 using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.DataAccess.Entities;
 using ClubStats.AspNetCore.Utilities;
+using FluentValidation;
 using Mapster;
 using MediatR;
 
 namespace ClubStats.AspNetCore.Features;
 
-public class CreateMeeting : IValidatableObject
+public class CreateMeeting
 {
-    [Required]
     public Guid OrganizationId { get; set; }
-
-    [Required]
-    [StringLength(2000, MinimumLength = 5)]
     public string Description { get; set; } = string.Empty;
-    
-    [Required]
     public DateTime StartDate { get; set; }
-    
-    [Required]
     public DateTime EndDate { get; set; }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        var now = DateTime.UtcNow;
+}
 
-        if (StartDate < now)
-        {
-            yield return new ValidationResult(
-                "Start date time must be upcoming.",
-                new[] { nameof(StartDate) });
-        }
-        
-        if (StartDate > EndDate)
-        {
-            yield return new ValidationResult(
-                "End date time must be after start date time.",
-                new[] { nameof(EndDate) });
-        }
+public class CreateMeetingValidator : AbstractValidator<CreateMeeting>
+{
+    public CreateMeetingValidator()
+    {
+        RuleFor(m => m.OrganizationId)
+            .NotNull();
+
+        RuleFor(m => m.Description)
+            .NotEmpty()
+            .MinimumLength(5)
+            .MaximumLength(2000);
+
+        RuleFor(m => m)
+            .Must(m => m.StartDate < DateTime.UtcNow)
+            .WithName("StartDate")
+            .WithMessage("Start date time must be upcoming.");
+
+        RuleFor(m => m)
+            .Must(m => m.StartDate > m.EndDate)
+            .WithName("EndDate")
+            .WithMessage("End date time must be after start date time.");
+
+        RuleFor(m => m.StartDate)
+            .NotNull();
+
+        RuleFor(m => m.EndDate)
+            .NotNull();
     }
 }
 
@@ -68,7 +72,7 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
 
             if (organization is null)
             {
-                var error = new ApiError(400, "Invalid organization id was provided.");
+                var error = new ApiError(404, "Invalid organization id was provided.");
 
                 return Result<Guid, ApiError>.Error(error);
             }

@@ -1,6 +1,19 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace ClubStats.AspNetCore.Utilities;
 
-public record ApiError(int Code, string Message);
+public record ApiError(int Code, string Message)
+{
+    public IActionResult Result()
+    {
+        if (String.IsNullOrEmpty(Message))
+        {
+            return new StatusCodeResult(Code);
+        }
+
+        return new ObjectResult(this) { StatusCode = Code };
+    }
+}
 
 public readonly struct Result<TResult, TError>
 {
