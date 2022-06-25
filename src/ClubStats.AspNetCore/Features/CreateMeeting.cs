@@ -41,8 +41,23 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
             var organization = await _dbContext.Organizations.FindAsync(request.Meeting.OrganizationId);
 
             if (organization == null)
-            {
+            { 
                 var error = new ApiError(400, "Invalid organization id was provided.");
+                
+                return Result<Guid, ApiError>.Error(error);
+            }
+
+            var now = DateTime.UtcNow;
+            if (meeting.StartDate < now)
+            {
+                var error = new ApiError(400, "Start date time must be upcoming.");
+                
+                return Result<Guid, ApiError>.Error(error);
+            }
+
+            if (meeting.StartDate > meeting.EndDate)
+            {
+                var error = new ApiError(400, "End date time must be after start date time.");
                 
                 return Result<Guid, ApiError>.Error(error);
             }
