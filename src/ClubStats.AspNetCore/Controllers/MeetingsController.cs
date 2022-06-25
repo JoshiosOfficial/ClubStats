@@ -18,14 +18,27 @@ public class MeetingsController : ControllerBase
 
     [HttpPost]
     [ProblemDetails]
-    public IActionResult CreateMeeting([FromBody] CreateMeeting createMeeting)
+    public async Task<IActionResult> CreateMeeting([FromBody] CreateMeeting createMeeting)
     {
         var createMeetingCommand = new CreateMeetingCommand { Meeting = createMeeting };
-        var response = _mediator.Send(createMeetingCommand);
+        var response = await _mediator.Send(createMeetingCommand);
 
-        return response.Result.Match(
+        return response.Match(
             guid => Ok(new { guid }),
             error => StatusCode(error.Code, error)
         );
     }
-}
+
+    [HttpGet]
+    [ProblemDetails]
+    public async Task<IActionResult> GetMeetings([FromQuery] GetAllMeetings getAllMeetings)
+    {
+        var getAllMeetingsCommand = new GetAllMeetingsCommand { MeetingQuery = getAllMeetings };
+        var response = await _mediator.Send(getAllMeetingsCommand);
+
+        return response.Match(
+            Ok,
+            error => StatusCode(error.Code, error)
+        );
+    }
+} 
