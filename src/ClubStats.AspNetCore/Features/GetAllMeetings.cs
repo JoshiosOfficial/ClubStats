@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.DataAccess.Entities;
-using ClubStats.AspNetCore.Extensions;
 using ClubStats.AspNetCore.Utilities;
 using Mapster;
 using MediatR;
