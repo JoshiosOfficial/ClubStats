@@ -25,7 +25,7 @@ public class MeetingsController : ControllerBase
 
         return response.Result.Match(
             guid => Ok(new { guid }),
-            error => StatusCode(500, error)
+            error => StatusCode(error.Code, error)
         );
     }
 }

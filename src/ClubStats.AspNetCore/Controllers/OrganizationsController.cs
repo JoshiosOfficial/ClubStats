@@ -25,7 +25,7 @@ public class OrganizationsController : ControllerBase
 
         return response.Result.Match(
             guid => Ok(new { guid }),
-            error => StatusCode(500, error)
+            error => StatusCode(error.Code, error)
         );
     }
 
@@ -38,7 +38,7 @@ public class OrganizationsController : ControllerBase
 
         return response.Result.Match(
             Ok,
-            error => StatusCode(500, error)
+            error => StatusCode(error.Code, error)
         );
     }
 }
