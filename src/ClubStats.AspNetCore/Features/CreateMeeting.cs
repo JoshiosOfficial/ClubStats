@@ -7,17 +7,43 @@ using MediatR;
 
 namespace ClubStats.AspNetCore.Features;
 
-public class CreateMeeting
+public class CreateMeeting : IValidatableObject
 {
+    [Required]
     public Guid OrganizationId { get; set; }
-    public string Description { get; set; }
+
+    [Required]
+    [StringLength(2000, MinimumLength = 5)]
+    public string Description { get; set; } = string.Empty;
+    
+    [Required]
     public DateTime StartDate { get; set; }
+    
+    [Required]
     public DateTime EndDate { get; set; }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        var now = DateTime.UtcNow;
+
+        if (StartDate < now)
+        {
+            yield return new ValidationResult(
+                "Start date time must be upcoming.",
+                new[] { nameof(StartDate) });
+        }
+        
+        if (StartDate < EndDate)
+        {
+            yield return new ValidationResult(
+                "End date time must be after start date time.",
+                new[] { nameof(EndDate) });
+        }
+    }
 }
 
 public class CreateMeetingCommand : IRequest<Result<Guid, ApiError>>
-{
-    [Required]
+{ 
     public CreateMeeting Meeting { get; set; }
 }
 
@@ -41,24 +67,9 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
             var organization = await _dbContext.Organizations.FindAsync(request.Meeting.OrganizationId);
 
             if (organization == null)
-            { 
+            {
                 var error = new ApiError(400, "Invalid organization id was provided.");
-                
-                return Result<Guid, ApiError>.Error(error);
-            }
 
-            var now = DateTime.UtcNow;
-            if (meeting.StartDate < now)
-            {
-                var error = new ApiError(400, "Start date time must be upcoming.");
-                
-                return Result<Guid, ApiError>.Error(error);
-            }
-
-            if (meeting.StartDate > meeting.EndDate)
-            {
-                var error = new ApiError(400, "End date time must be after start date time.");
-                
                 return Result<Guid, ApiError>.Error(error);
             }
 
