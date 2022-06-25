@@ -11,20 +11,20 @@ public class GetOrganization
     public string Name { get; set; } = string.Empty;
 }
 
-public class GetAllOrganizationsCommand : IRequest<Result<List<GetOrganization>, ApiError>>
+public class GetAllOrganizationsQuery : IRequest<Result<List<GetOrganization>, ApiError>>
 {
 }
 
-public class GetAllOrganizationsCommandHandler : IRequestHandler<GetAllOrganizationsCommand, Result<List<GetOrganization>, ApiError>>
+public class GetAllOrganizationsQueryHandler : IRequestHandler<GetAllOrganizationsQuery, Result<List<GetOrganization>, ApiError>>
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public GetAllOrganizationsCommandHandler(ApplicationDbContext dbContext)
+    public GetAllOrganizationsQueryHandler(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<Result<List<GetOrganization>, ApiError>> Handle(GetAllOrganizationsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetOrganization>, ApiError>> Handle(GetAllOrganizationsQuery request, CancellationToken cancellationToken)
     {
         try
         {

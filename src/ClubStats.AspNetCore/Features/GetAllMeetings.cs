@@ -35,21 +35,21 @@ public class MeetingResponse
     public DateTime EndDate { get; set; }
 }
 
-public class GetAllMeetingsCommand : IRequest<Result<List<MeetingResponse>, ApiError>>
+public class GetAllMeetingsQuery : IRequest<Result<List<MeetingResponse>, ApiError>>
 {
     public GetAllMeetings MeetingQuery { get; set; }
 }
 
-public class GetAllMeetingsCommandHandler : IRequestHandler<GetAllMeetingsCommand, Result<List<MeetingResponse>, ApiError>>
+public class GetAllMeetingsQueryHandler : IRequestHandler<GetAllMeetingsQuery, Result<List<MeetingResponse>, ApiError>>
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public GetAllMeetingsCommandHandler(ApplicationDbContext dbContext)
+    public GetAllMeetingsQueryHandler(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<Result<List<MeetingResponse>, ApiError>> Handle(GetAllMeetingsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<List<MeetingResponse>, ApiError>> Handle(GetAllMeetingsQuery request, CancellationToken cancellationToken)
     {
         var meetingQuery = request.MeetingQuery;
 

@@ -33,8 +33,8 @@ public class MeetingsController : ControllerBase
     [ProblemDetails]
     public async Task<IActionResult> GetMeetings([FromQuery] GetAllMeetings getAllMeetings)
     {
-        var getAllMeetingsCommand = new GetAllMeetingsCommand { MeetingQuery = getAllMeetings };
-        var response = await _mediator.Send(getAllMeetingsCommand);
+        var getAllMeetingsQuery = new GetAllMeetingsQuery { MeetingQuery = getAllMeetings };
+        var response = await _mediator.Send(getAllMeetingsQuery);
 
         return response.Match(
             Ok,

@@ -18,12 +18,12 @@ public class OrganizationsController : ControllerBase
 
     [HttpPost]
     [ProblemDetails]
-    public IActionResult CreateOrganization([FromBody] CreateOrganization createOrganization)
+    public async Task<IActionResult> CreateOrganization([FromBody] CreateOrganization createOrganization)
     {
         var createMeetingCommand = new CreateOrganizationCommand { Organization = createOrganization };
-        var response = _mediator.Send(createMeetingCommand);
+        var response = await _mediator.Send(createMeetingCommand);
 
-        return response.Result.Match(
+        return response.Match(
             guid => Ok(new { guid }),
             error => StatusCode(error.Code, error)
         );
@@ -31,12 +31,12 @@ public class OrganizationsController : ControllerBase
 
     [HttpGet]
     [ProblemDetails]
-    public IActionResult GetAllOrganizations()
+    public async Task<IActionResult> GetAllOrganizations()
     {
-        var getAllOrganizationsCommand = new GetAllOrganizationsCommand();
-        var response = _mediator.Send(getAllOrganizationsCommand);
+        var getAllOrganizationsQuery = new GetAllOrganizationsQuery();
+        var response = await _mediator.Send(getAllOrganizationsQuery);
 
-        return response.Result.Match(
+        return response.Match(
             Ok,
             error => StatusCode(error.Code, error)
         );
