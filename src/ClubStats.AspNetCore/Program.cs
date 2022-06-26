@@ -1,12 +1,13 @@
 using System.Reflection;
-using System.Text;
+
+using Auth0.AspNetCore.Authentication;
 using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.Filters;
 using FluentValidation.AspNetCore;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var assembly = Assembly.GetExecutingAssembly();
 var builder = WebApplication.CreateBuilder(args);
@@ -20,28 +21,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .AddAuthentication(options =>
+    .AddAuth0WebAppAuthentication(Auth0Constants.AuthenticationScheme, options =>
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.Domain = builder.Configuration["Auth0:Domain"];
+        options.ClientId = builder.Configuration["Auth0:ClientId"];
+        options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
     })
-    .AddJwtBearer(options =>
+    .WithAccessToken(options =>
     {
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.Audience = builder.Configuration["Auth0:Audience"];
+        options.UseRefreshTokens = true;
+        options.Events = new Auth0WebAppWithAccessTokenEvents
         {
-            ValidateLifetime = true,
-            RequireExpirationTime = true,
-            ClockSkew = TimeSpan.FromMinutes(1),
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
-        };
-        options.Events = new JwtBearerEvents()
-        {
-            OnMessageReceived = context =>
+            OnMissingRefreshToken = async (context) =>
             {
-                context.Token = context.Request.Cookies["X-Access-Token"];
-                return Task.CompletedTask;
+                await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                var authenticationProperties = new LogoutAuthenticationPropertiesBuilder().WithRedirectUri("/").Build();
+                await context.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             }
         };
     });
@@ -58,6 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
