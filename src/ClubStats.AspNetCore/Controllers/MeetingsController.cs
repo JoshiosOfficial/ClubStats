@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ClubStats.AspNetCore.Features;
+﻿using ClubStats.AspNetCore.Features.Commands.CreateMeeting;
+using ClubStats.AspNetCore.Features.Queries.GetAllMeetings;
+using ClubStats.AspNetCore.Features.Queries.GetMeeting;
 using ClubStats.AspNetCore.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +22,8 @@ public class MeetingsController : ControllerBase
     [ProblemDetails]
     public async Task<IActionResult> CreateMeeting([FromBody] CreateMeeting createMeeting)
     {
-        var createMeetingCommand = new CreateMeetingCommand { Meeting = createMeeting };
-        var response = await _mediator.Send(createMeetingCommand);
+        var command = new CreateMeetingCommand { Meeting = createMeeting };
+        var response = await _mediator.Send(command);
 
         return response.Match(
             guid => Ok(new { guid }),
@@ -34,8 +35,8 @@ public class MeetingsController : ControllerBase
     [ProblemDetails]
     public async Task<IActionResult> GetAllMeetings([FromQuery] GetAllMeetings getAllMeetings)
     {
-        var getAllMeetingsQuery = new GetAllMeetingsQuery { MeetingQuery = getAllMeetings };
-        var response = await _mediator.Send(getAllMeetingsQuery);
+        var query = new GetAllMeetingsQuery { MeetingQuery = getAllMeetings };
+        var response = await _mediator.Send(query);
 
         return response.Match(
             Ok,
@@ -47,8 +48,8 @@ public class MeetingsController : ControllerBase
     [ProblemDetails]
     public async Task<IActionResult> GetMeeting(Guid id)
     {
-        var getMeetingQuery = new GetMeetingQuery { Id = id };
-        var response = await _mediator.Send(getMeetingQuery);
+        var query = new GetMeetingQuery { Id = id };
+        var response = await _mediator.Send(query);
 
         return response.Match(
             Ok,

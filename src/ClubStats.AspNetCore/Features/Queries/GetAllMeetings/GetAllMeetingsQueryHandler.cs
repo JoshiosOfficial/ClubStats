@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.DataAccess.Entities;
 using ClubStats.AspNetCore.Utilities;
@@ -7,38 +6,7 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClubStats.AspNetCore.Features;
-
-public enum MeetingState
-{
-    Any,
-    Ongoing,
-    Scheduled,
-    Past
-}
-
-public class GetAllMeetings
-{
-    [Required]
-    public Guid OrganizationId { get; set; }
-
-    public MeetingState State { get; set; } = MeetingState.Any;
-    public string? Description { get; set; }
-}
-
-public class MeetingResponse
-{
-    public Guid Id { get; set; }
-    public Guid OrganizationId { get; set; }
-    public string Description { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-}
-
-public class GetAllMeetingsQuery : IRequest<Result<List<MeetingResponse>, ApiError>>
-{
-    public GetAllMeetings MeetingQuery { get; set; }
-}
+namespace ClubStats.AspNetCore.Features.Queries.GetAllMeetings;
 
 public class GetAllMeetingsQueryHandler : IRequestHandler<GetAllMeetingsQuery, Result<List<MeetingResponse>, ApiError>>
 {

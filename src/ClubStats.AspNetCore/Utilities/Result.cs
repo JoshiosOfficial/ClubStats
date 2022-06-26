@@ -17,9 +17,9 @@ public record ApiError(int Code, string Message)
 
 public readonly struct Result<TResult, TError>
 {
-    private readonly bool IsSuccess { get; }
-    private readonly TResult? Value { get; }
-    private readonly TError? ErrorValue { get; }
+    private bool IsSuccess { get; }
+    private TResult? Value { get; }
+    private TError? ErrorValue { get; }
 
     private Result(TResult result)
     {

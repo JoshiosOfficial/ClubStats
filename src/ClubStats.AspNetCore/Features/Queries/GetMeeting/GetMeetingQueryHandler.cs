@@ -1,29 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ClubStats.AspNetCore.DataAccess;
-using ClubStats.AspNetCore.DataAccess.Entities;
+﻿using ClubStats.AspNetCore.DataAccess;
+using ClubStats.AspNetCore.Features.Queries.GetAllMeetings;
 using ClubStats.AspNetCore.Utilities;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace ClubStats.AspNetCore.Features;
-
-public class GetMeeting
-{
-    public Guid Id { get; set; }
-    public Guid OrganizationId { get; set; }
-    public string State { get; set; }
-    public string Description { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public List<Attendee> Attendees { get; set; } = new();   
-}
-
-public class GetMeetingQuery : IRequest<Result<GetMeeting, ApiError>>
-{
-    [Required]
-    public Guid Id { get; set; }
-}
+namespace ClubStats.AspNetCore.Features.Queries.GetMeeting;
 
 public class GetMeetingQueryHandler : IRequestHandler<GetMeetingQuery, Result<GetMeeting, ApiError>>
 {

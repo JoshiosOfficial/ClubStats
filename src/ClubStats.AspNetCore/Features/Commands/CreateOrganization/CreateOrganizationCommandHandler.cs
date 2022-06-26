@@ -1,23 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using ClubStats.AspNetCore.DataAccess;
+﻿using ClubStats.AspNetCore.DataAccess;
 using ClubStats.AspNetCore.DataAccess.Entities;
 using ClubStats.AspNetCore.Utilities;
-using Mapster;
 using MediatR;
 
-namespace ClubStats.AspNetCore.Features;
-
-public class CreateOrganization
-{ 
-    [Required]
-    [StringLength(100, MinimumLength = 5)]
-    public string Name { get; set; } = string.Empty;
-}
-
-public class CreateOrganizationCommand : IRequest<Result<Guid, ApiError>>
-{
-    public CreateOrganization Organization { get; set; }
-}
+namespace ClubStats.AspNetCore.Features.Commands.CreateOrganization;
 
 public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizationCommand, Result<Guid, ApiError>>
 {
