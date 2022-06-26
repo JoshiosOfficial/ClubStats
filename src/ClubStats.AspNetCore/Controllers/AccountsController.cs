@@ -31,13 +31,6 @@ public class AccountsController : ControllerBase
             .Build();
 
         await HttpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-        
-        Console.WriteLine(User.Identity?.IsAuthenticated == true);
-        if (User?.Identity?.IsAuthenticated == true)
-        {
-            var findFirst = User.FindFirst(ClaimTypes.NameIdentifier);
-            Console.WriteLine(findFirst?.Value);
-        }
     }
 
     [HttpGet("accounts/login/callback")]
