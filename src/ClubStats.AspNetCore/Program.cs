@@ -1,12 +1,10 @@
 using System.Reflection;
-
-using Auth0.AspNetCore.Authentication;
 using ClubStats.AspNetCore.DataAccess;
+using ClubStats.AspNetCore.DataAccess.Entities;
 using ClubStats.AspNetCore.Filters;
 using FluentValidation.AspNetCore;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var assembly = Assembly.GetExecutingAssembly();
@@ -20,30 +18,14 @@ builder.Services.AddMediatR(assembly);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services
-    .AddAuth0WebAppAuthentication(Auth0Constants.AuthenticationScheme, options =>
-    {
-        options.Domain = builder.Configuration["Auth0:Domain"];
-        options.ClientId = builder.Configuration["Auth0:ClientId"];
-        options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
-    })
-    .WithAccessToken(options =>
-    {
-        options.Audience = builder.Configuration["Auth0:Audience"];
-        options.UseRefreshTokens = true;
-        options.Events = new Auth0WebAppWithAccessTokenEvents
-        {
-            OnMissingRefreshToken = async (context) =>
-            {
-                await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                var authenticationProperties = new LogoutAuthenticationPropertiesBuilder().WithRedirectUri("/").Build();
-                await context.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-            }
-        };
-    });
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgresql")));
+
+builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.Configure<IdentityOptions>(options => options.User.RequireUniqueEmail = true);
+
 
 var app = builder.Build();
 

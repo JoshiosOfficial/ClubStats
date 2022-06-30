@@ -1,14 +1,15 @@
 using ClubStats.AspNetCore.DataAccess.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClubStats.AspNetCore.DataAccess;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
 {
     
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<OrganizationMember> OrganizationMembers { get; set; }
-    public DbSet<User> Users { get; set; }
     public DbSet<Meeting> Meetings { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Attendee> Attendees { get; set; }
@@ -20,5 +21,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
     }
 }
