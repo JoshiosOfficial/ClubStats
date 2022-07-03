@@ -19,12 +19,13 @@ public class RegisterAccountCommandHandler : IRequestHandler<RegisterAccountComm
         var user = new User
         {
             Id = Guid.NewGuid().ToString(),
+            SecurityStamp = Guid.NewGuid().ToString(),
             UserName = body.Username,
             Email = body.EmailAddress,
             FirstName = body.FirstName,
             LastName = body.LastName
         };
-        
+
         return await _userManager.CreateAsync(user, body.Password);
     }
 }
