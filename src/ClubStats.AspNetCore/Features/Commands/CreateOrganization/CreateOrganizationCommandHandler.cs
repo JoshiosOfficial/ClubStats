@@ -33,7 +33,7 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
         }
         catch
         {
-            var error = new ApiError(500, "Could not add organization to database");
+            var error = new ApiError(StatusCodes.Status500InternalServerError, "Could not add organization to database");
 
             return Result<Guid, ApiError>.Error(error);
         }

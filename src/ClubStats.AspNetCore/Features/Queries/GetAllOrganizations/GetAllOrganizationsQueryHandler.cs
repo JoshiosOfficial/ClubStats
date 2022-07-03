@@ -27,7 +27,7 @@ public class GetAllOrganizationsQueryHandler : IRequestHandler<GetAllOrganizatio
         }
         catch
         {
-            var error = new ApiError(500, "Could not fetch organizations from database");
+            var error = new ApiError(StatusCodes.Status500InternalServerError, "Could not fetch organizations from database");
 
             return Result<List<GetOrganizationResponse>, ApiError>.Error(error);
         }

@@ -40,7 +40,7 @@ public class GetAllMeetingsQueryHandler : IRequestHandler<GetAllMeetingsQuery, R
         }
         catch
         {
-            var error = new ApiError(500, "Could not retrieve meetings from database.");
+            var error = new ApiError(StatusCodes.Status500InternalServerError, "Could not retrieve meetings from database.");
 
             return Result<List<MeetingResponse>, ApiError>.Error(error);
         }

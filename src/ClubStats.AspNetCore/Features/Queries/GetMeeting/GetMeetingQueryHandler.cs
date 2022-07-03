@@ -28,7 +28,7 @@ public class GetMeetingQueryHandler : IRequestHandler<GetMeetingQuery, Result<Ge
             
             if (meeting is null)
             {
-                var error = new ApiError(404, "Could not find meeting with specified id");
+                var error = new ApiError(StatusCodes.Status404NotFound, "Could not find meeting with specified id");
 
                 return Result<GetMeeting, ApiError>.Error(error);
             }
@@ -39,7 +39,7 @@ public class GetMeetingQueryHandler : IRequestHandler<GetMeetingQuery, Result<Ge
         }
         catch
         {
-            var error = new ApiError(500, "Could not fetch meeting from database");
+            var error = new ApiError(StatusCodes.Status500InternalServerError, "Could not fetch meeting from database");
 
             return Result<GetMeeting, ApiError>.Error(error);
         }

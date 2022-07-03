@@ -24,7 +24,7 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
 
             if (organization is null)
             {
-                var error = new ApiError(404, "Invalid organization id was provided.");
+                var error = new ApiError(StatusCodes.Status404NotFound, "Invalid organization id was provided.");
 
                 return Result<Guid, ApiError>.Error(error);
             }
@@ -47,7 +47,7 @@ public class CreateMeetingCommandHandler : IRequestHandler<CreateMeetingCommand,
         catch
         {
             // TODO Handle the exception better
-            var error = new ApiError(500, "Could not add meeting to database");
+            var error = new ApiError(StatusCodes.Status500InternalServerError, "Could not add meeting to database");
 
             return Result<Guid, ApiError>.Error(error);
         }
