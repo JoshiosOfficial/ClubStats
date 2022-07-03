@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgresql")));
 
-builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedEmail = true)
+builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
@@ -30,6 +30,7 @@ builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirme
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
 });
 
@@ -38,7 +39,7 @@ builder.Services.AddAuthentication(o =>
         o.DefaultScheme = IdentityConstants.ApplicationScheme;
         o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
-    .AddIdentityCookies(o => { });
+    .AddIdentityCookies(_ => { });
 
 
 var app = builder.Build();
